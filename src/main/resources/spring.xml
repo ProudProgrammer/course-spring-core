@@ -5,10 +5,16 @@
  		http://www.springframework.org/schema/beans
  		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-	<bean id="client" class="hu.course.spring.core.beans.Client" />
+	<bean id="client" class="hu.course.spring.core.beans.Client">
+		<property name="id" value="2" />
+		<property name="fullName" value="Sarah Connor" />
+	</bean>
 
 	<bean id="eventLogger" class="hu.course.spring.core.loggers.ConsoleEventLogger" />
 
-	<bean id="app" class="hu.course.spring.core.App" />
+	<bean id="app" class="hu.course.spring.core.App">
+		<property name="client" ref="client" />
+		<property name="eventLogger" ref="eventLogger" />
+	</bean>
 
 </beans>
