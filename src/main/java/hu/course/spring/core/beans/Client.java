@@ -9,7 +9,6 @@ public class Client {
 	}
 
 	public Client(String id, String fullName) {
-		super();
 		this.id = id;
 		this.fullName = fullName;
 	}

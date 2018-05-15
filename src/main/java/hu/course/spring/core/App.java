@@ -1,53 +1,60 @@
 package hu.course.spring.core;
 
-import org.springframework.context.ApplicationContext;
+import java.util.Map;
+
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import hu.course.spring.core.beans.Client;
+import hu.course.spring.core.beans.Event;
 import hu.course.spring.core.loggers.ConsoleEventLogger;
+import hu.course.spring.core.loggers.EventLogger;
+import hu.course.spring.core.types.EventType;
 
 public class App {
 
 	private Client client;
-	private ConsoleEventLogger eventLogger;
+	private EventLogger defaultLogger;
+	private Map<EventType, EventLogger> loggers;
+	private Event event;
 
-	public static void main(String[] args) {
+	public App() {
+	}
+
+	public App(Client client, EventLogger defaultLogger, Map<EventType, EventLogger> loggers) {
+		this.client = client;
+		this.defaultLogger = defaultLogger;
+		this.loggers = loggers;
+	}
+
+	public static void main(String[] args) throws Exception {
 		App app = new App();
 
 		app.client = new Client("1", "John Smith");
-		app.eventLogger = new ConsoleEventLogger();
+		app.defaultLogger = new ConsoleEventLogger();
 
 		app.logEvent("Some event for user 1");
 
-		ApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
+		try (ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml")) {
+			app = (App) ctx.getBean("app");
 
-		app = (App) ctx.getBean("app");
+			app.logEvent("Some event for user 2");
+			app.logEvent(app.event);
+		}
 
-		app.logEvent("Some event for user 2");
-		
-		((ConfigurableApplicationContext)ctx).close();
 	}
 
-	public void logEvent(String msg) {
+	public void logEvent(String msg) throws Exception {
 		String message = msg.replace(client.getId(), client.getFullName());
-		eventLogger.logEvent(message);
+		defaultLogger.logEvent(message);
 	}
 
-	public Client getClient() {
-		return client;
+	public void logEvent(Event event) throws Exception {
+		defaultLogger.logEvent(event);
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
-
-	public ConsoleEventLogger getEventLogger() {
-		return eventLogger;
-	}
-
-	public void setEventLogger(ConsoleEventLogger eventLogger) {
-		this.eventLogger = eventLogger;
+	public void setEvent(Event event) {
+		this.event = event;
 	}
 
 }
