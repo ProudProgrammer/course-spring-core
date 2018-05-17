@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+ 		http://www.springframework.org/schema/beans
+ 		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	<bean name="someComponent"
+		class="hu.course.spring.core.quiz2.SomeComponent" init-method="init"
+		destroy-method="close" lazy-init="true" scope="prototype">
+	</bean>
+
+	<bean name="someService"
+		class="hu.course.spring.core.quiz2.SomeService" init-method="init"
+		destroy-method="close">
+		<constructor-arg ref="someComponent" />
+	</bean>
+
+</beans>
